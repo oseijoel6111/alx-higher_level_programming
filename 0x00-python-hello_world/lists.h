@@ -3,21 +3,23 @@
 
 #include <stdlib.h>
 
-
-typedef struct listsint_search
+/**
+ * struct listint_s - singly linked list
+ * @n: integer
+ * @next: points to the next node
+ *
+ * Description: singly linked list node structure
+ * 
+ */
+typedef struct listint_s
 {
-	int n;
-	struct listsint_search *next;
-} listsint_text;
+    int n;
+    struct listint_s *next;
+} listint_t;
 
-// printList int prototype
-size_t printListInt(const listsint_text *h);
-// addNode int prototype
-listsint_text *addNodeInt(listsint_text **head, const int n);
-// freeListInt prototype
-void freeListInt(listsint_text *head);
-// checkCycle prototype
-int checkCycle(listsint_text *list);
+size_t print_listint(const listint_t *h);
+listint_t *add_nodeint(listint_t **head, const int n);
+void free_listint(listint_t *head);
+int check_cycle(listint_t *list);
 
-#endif
-
+#endif /* LISTS_H */
