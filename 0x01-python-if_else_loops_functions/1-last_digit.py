@@ -8,4 +8,4 @@ elif last_digit == 0:
     comparison = "0"
 else:
     comparison = "less than 6 and not 0"
-print("The string Last digit of", number, "is", last_digit, "and is", comparison)
+print("Last digit of", number, "is", last_digit, "and is", comparison)
