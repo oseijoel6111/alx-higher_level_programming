@@ -1,73 +1,89 @@
 #include "lists.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 /**
- * reverse_listint - reverses a linked list
- * @head: pointer to the first node in the list
+ * is_palindrome - checks if a singly linked list is a palindrome
+ * @head: double pointer to the head of the linked list
  *
- * Return: pointer to the first node in the new list
- */
-void reverse_listint(listint_t **head)
-{
-	listint_t *prev = NULL;
-	listint_t *current = *head;
-	listint_t *next = NULL;
-
-	while (current)
-	{
-		next = current->next;
-		current->next = prev;
-		prev = current;
-		current = next;
-	}
-
-	*head = prev;
-}
-
-/**
- * is_palindrome - checks if a linked list is a palindrome
- * @head: double pointer to the linked list
- *
- * Return: 1 if it is, 0 if not
+ * Return: 1 if it is a palindrome, 0 if it is not
  */
 int is_palindrome(listint_t **head)
 {
-	listint_t *slow = *head, *fast = *head, *temp = *head, *dup = NULL;
+    listint_t *slow = *head, *fast = *head;
+    listint_t *stack = NULL;
 
-	if (*head == NULL || (*head)->next == NULL)
-		return (1);
+    if (*head == NULL || (*head)->next == NULL)
+        return (1); // An empty list or a list with a single node is considered a palindrome
 
-	while (1)
-	{
-		fast = fast->next->next;
-		if (!fast)
-		{
-			dup = slow->next;
-			break;
-		}
-		if (!fast->next)
-		{
-			dup = slow->next->next;
-			break;
-		}
-		slow = slow->next;
-	}
+    // Traverse the list with two pointers: slow and fast
+    while (fast != NULL && fast->next != NULL)
+    {
+        stack_push(&stack, slow->n);
+        slow = slow->next;
+        fast = fast->next->next;
+    }
 
-	reverse_listint(&dup);
+    // If the length of the list is odd, skip the middle element
+    if (fast != NULL)
+        slow = slow->next;
 
-	while (dup && temp)
-	{
-		if (temp->n == dup->n)
-		{
-			dup = dup->next;
-			temp = temp->next;
-		}
-		else
-			return (0);
-	}
+    // Compare the remaining elements with the stack
+    while (slow != NULL)
+    {
+        int top = stack_pop(&stack);
 
-	if (!dup)
-		return (1);
+        if (top != slow->n)
+            return (0); // Not a palindrome
 
-	return (0);
+        slow = slow->next;
+    }
+
+    return (1); // It is a palindrome
+}
+
+/**
+ * stack_push - pushes a value onto a stack
+ * @stack: double pointer to the top of the stack
+ * @value: value to push onto the stack
+ */
+void stack_push(listint_t **stack, int value)
+{
+    listint_t *new_node = malloc(sizeof(listint_t));
+
+    if (new_node == NULL)
+    {
+        perror("Unable to allocate memory");
+        exit(EXIT_FAILURE);
+    }
+
+    new_node->n = value;
+    new_node->next = *stack;
+    *stack = new_node;
+}
+
+/**
+ * stack_pop - pops a value from a stack
+ * @stack: double pointer to the top of the stack
+ *
+ * Return: the value popped from the stack
+ */
+int stack_pop(listint_t **stack)
+{
+    int value;
+    listint_t *temp;
+
+    if (*stack == NULL)
+    {
+        perror("Stack is empty");
+        exit(EXIT_FAILURE);
+    }
+
+    value = (*stack)->n;
+    temp = *stack;
+    *stack = (*stack)->next;
+    free(temp);
+
+    return value;
 }
 
