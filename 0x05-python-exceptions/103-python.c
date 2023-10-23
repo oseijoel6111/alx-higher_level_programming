@@ -1,5 +1,7 @@
-#include <Python.h>
 #include <stdio.h>
+#include <Python.h>
+#include <stdlib.h>
+#include <floatobject.h>
 
 /**
  * print_python_float - Print information about a Python float object.
