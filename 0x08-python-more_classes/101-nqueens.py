@@ -1,58 +1,54 @@
 #!/usr/bin/python3
 """Solves the N-queens puzzle.
 
-Determines all possible solutions to placing N non-attacking queens on an NxN chessboard.
+Determines all possible solutions to placing N
+N non-attacking queens on an NxN chessboard.
 
-Usage: nqueens N
-If the user called the program with the wrong number of arguments, print Usage: nqueens N, followed by a new line, and exit with the status 1
-where N must be an integer greater or equal to 4
-If N is not an integer, print N must be a number, followed by a new line, and exit with the status 1
-If N is smaller than 4, print N must be at least 4, followed by a new line, and exit with the status 1
-The program should print every possible solution to the problem
-One solution per line
-Format: see example
-You don’t have to print the solutions in a specific order
-You are only allowed to import the sys module
+Example:
+    $ ./101-nqueens.py N
+
+N must be an integer greater than or equal to 4.
 """
 
 import sys
 
-def is_safe(board, row, col):
+def init_board(n):
+    """Initialize an `n`x`n` sized chessboard with empty squares."""
+    board = [[' ' for _ in range(n)] for _ in range(n)]
+    return board
+
+def is_safe(board, row, col, n):
     """Check if it's safe to place a queen at a given position."""
-    for i in range(col):
-        if board[i] == row or \
-           board[i] - i == row - col or \
-           board[i] + i == row + col:
+    # Check the column
+    for i in range(row):
+        if board[i][col] == 'Q':
             return False
+
+    # Check upper-left diagonal
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 'Q':
+            return False
+
+    # Check upper-right diagonal
+    for i, j in zip(range(row, -1, -1), range(col, n)):
+        if board[i][j] == 'Q':
+            return False
+
     return True
 
-def print_solution(board):
-    """Print a solution in the required format."""
-    for row in board:
-        print("[" + str(board.index(row)) + ", " + str(row) + "]", end="")
-        if board.index(row) < len(board) - 1:
-            print(", ", end="")
-    print()
+def solve_nqueens(board, row, n, solutions):
+    """Recursively solve the N-queens puzzle."""
+    if row == n:
+        solutions.append(["[" + str(i) + ", " + str(board[i].index('Q')) + "]" for i in range(n)])
+        return
 
-def solve_nqueens(n):
-    """Solve the N-Queens puzzle and print all solutions."""
-    def backtrack(col):
-        if col == n:
-            solutions.append(board[:])
-            return
-        for row in range(n):
-            if is_safe(board, row, col):
-                board.append(row)
-                backtrack(col + 1)
-                board.pop()
+    for col in range(n):
+        if is_safe(board, row, col, n):
+            board[row][col] = 'Q'
+            solve_nqueens(board, row + 1, n, solutions)
+            board[row][col] = ' '
 
-    solutions = []
-    board = []
-    backtrack(0)
-    for solution in solutions:
-        print_solution(solution)
-
-if __name__ == "__main":
+def main():
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
@@ -66,4 +62,12 @@ if __name__ == "__main":
         print("N must be a number")
         sys.exit(1)
 
-    solve_nqueens(n)
+    board = init_board(n)
+    solutions = []
+    solve_nqueens(board, 0, n, solutions)
+
+    for solution in solutions:
+        print("\n".join(solution))
+
+if __name__ == "__main__":
+    main()
