@@ -2,7 +2,8 @@
 """Defines a class and inherited class-checking function."""
 
 def is_kind_of_class(obj, a_class):
-    """Check if an object is an instance or inherited instance """
+    """Check if an object is an instance or inherited instance 
+    """
     if isinstance(obj, a_class):
         return True
     return False
